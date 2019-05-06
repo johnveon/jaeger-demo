@@ -2,6 +2,7 @@ package com.example.jaegerdemo.controller;
 
 import com.example.jaegerdemo.common.Baseresult;
 import com.example.jaegerdemo.facade.consumer.Serv2Facade;
+import com.example.jaegerdemo.facade.consumer.TestReadFacade;
 import com.example.jaegerdemo.model.vo.DemoVO;
 import com.example.jaegerdemo.model.vo.es.UserVO;
 import com.example.jaegerdemo.model.vo.facade.Serv2VO;
@@ -40,6 +41,9 @@ public class DemoController {
     @Autowired
     private EsDemoService esDemoService;
 
+    @Autowired
+    private TestReadFacade testReadFacade;
+
     @OwlTrace
     @GetMapping("/test")
     public Baseresult<DemoVO> test(String key){
@@ -52,15 +56,29 @@ public class DemoController {
     }
 
 
+    @GetMapping("/call/serv2/list")
+    public Baseresult<DemoVO> list(String key){
+
+        DemoVO demoVO = new DemoVO(1L,"测试222");
+
+        Baseresult<Serv2VO> zxx = testReadFacade.list(key);
+
+        if (zxx.getCode() != 200){
+            return Baseresult.fail(zxx.getDesc());
+        }
+        return Baseresult.success(demoVO);
+    }
+
     @GetMapping("/call/serv2")
     public Baseresult<DemoVO> callServ2(String key){
 
         DemoVO demoVO = new DemoVO(1L,"测试222");
 
-        Baseresult<Serv2VO> zxx = serv2Facade.findByName("zxx");
+        Baseresult<Serv2VO> zxx = serv2Facade.findByName("test222");
 
         return Baseresult.success(demoVO);
     }
+
 
 
     @RequestMapping("/chaining")

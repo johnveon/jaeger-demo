@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @author: zhoufengen
  * @create at: 2019-04-10 16:49
  **/
-@FeignClient(name = "${rest.service1.name}", url = "${rest.service1.url}")
+@FeignClient(name = "${rest.service1.name}", url = "${rest.service1.url:}")
 public interface Serv1Facade {
 
     String USER_BASE_URI = "/service1/v1/api/demo";

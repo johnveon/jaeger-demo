@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author: zhoufengen
  * @create at: 2019-04-10 16:49
  **/
-@FeignClient(name = "${rest.service2.name}", url = "${rest.service2.url}")
+@FeignClient(name = "${rest.service2.name}", url = "${rest.service2.url:}")
 public interface Serv2Facade {
 
     String USER_BASE_URI = "/service2/v1/api/demo";

@@ -27,7 +27,7 @@ public class Baseresult<T> {
     }
 
     public static <T> Baseresult<T> fail(String desc) {
-        return new Baseresult(200, desc, null);
+        return new Baseresult(400, desc, null);
     }
 
 

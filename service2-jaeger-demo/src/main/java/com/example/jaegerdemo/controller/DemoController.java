@@ -31,7 +31,7 @@ public class DemoController {
 
         DemoVO demoVO = new DemoVO(1L,"测试1");
 
-        Demo zxx = demoService.findByName("zxx1");
+        Demo zxx = demoService.findByName("name1");
 
         return Baseresult.success(demoVO);
     }
@@ -40,11 +40,32 @@ public class DemoController {
 
 
     @GetMapping("/findByName")
-    public Baseresult<DemoVO> findByName(@RequestParam("name") String name){
+    public Baseresult<DemoVO> findByName(@RequestParam("name") String name) throws InterruptedException {
 
-        DemoVO demoVO = new DemoVO(1L,"测试1112");
+        DemoVO demoVO = new DemoVO(1L,"测试2");
 
-        Demo zxx = demoService.findByName("zxx1112");
+        Demo zxx = demoService.findByName("name2");
+
+        Thread.sleep(7 * 1000);
+
+        return Baseresult.success(demoVO);
+    }
+
+
+    @GetMapping("/list")
+    public Baseresult<DemoVO> list(@RequestParam("name") String name) throws InterruptedException {
+
+        DemoVO demoVO = new DemoVO(1L,"测试1");
+
+        Demo zxx = demoService.findByName("name2");
+
+//        boolean b = true;
+//        if (b){
+//            throw new RuntimeException("测试异常");
+//        }
+        if ((Math.random() * 100) > 25 ) {
+            Thread.sleep(15 * 1000);
+        }
 
         return Baseresult.success(demoVO);
     }
@@ -55,7 +76,7 @@ public class DemoController {
 
         DemoVO demoVO = new DemoVO(1L,"测试1");
 
-        Baseresult<Serv1VO> zxx = serv1Facade.findByName("zxx1");
+        Baseresult<Serv1VO> zxx = serv1Facade.findByName("name1");
 
         return Baseresult.success(demoVO);
     }
@@ -65,4 +86,10 @@ public class DemoController {
         return "xxxsseweee-service2";
     }
 
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(Math.random() * 100 );
+        }
+    }
 }

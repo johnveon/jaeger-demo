@@ -72,24 +72,63 @@ spring:
 ---
 rest:
   service1:
-    name: service1
-    url: localhost:8081
+    name: service1-jaeger-demo
+    #url: localhost:8081
   service2:
-    name: service2
-    url: localhost:8082
+    name: service2-jaeger-demo
+    #url: localhost:8082
 
 #jaeger
 ---
 opentracing:
   jaeger:
     enabled: true
-    udp-sender:
-      host: localhost
-      port: 6831
-    log-spans: true #是否发送spans时输出日志，生产环境建议关闭该项，调试时可以开启
+    http-sender:
+      url: http://192.168.2.127:14268/api/traces
+#    udp-sender:
+#      host: localhost
+#      port: 6831
+    log-spans: false #是否发送spans时输出日志，生产环境建议关闭该项，调试时可以开启
     probabilistic-sampler:
       sampling-rate: 1 # 概率采集的概率设置，范围为0~1的小数，生产环境一般不全量采集
 
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka/
 
-
-
+---
+ribbon:
+  OkToRetryOnAllOperations: false #对所有操作请求都进行重试,默认false
+  ReadTimeout: 3000   #负载均衡超时时间，默认值5000
+  ConnectTimeout: 1000 #ribbon请求连接的超时时间，默认值2000
+  MaxAutoRetries: 0    #对当前实例的重试次数，默认0
+  MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1
+hystrix:
+  command:
+    default:  #default全局有效，service id指定应用有效
+      execution:
+        timeout:
+          #是否开启超时熔断，false则下面的timeoutInMilliseconds就失效，一直会等请求响应，直到1分钟超时
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 14000 #断路器超时时间，默认1000ms  > (3000 + 2000)*(0+1)*(1+1) = 10 s 重试2次12s
+feign:
+                   hystrix:
+                     enabled: true
+---
+ribbon:
+  eager-load:
+    enabled: true
+    clients: service1-jaeger-demo, service2-jaeger-demo
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"

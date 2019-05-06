@@ -1,0 +1,31 @@
+server:
+  port: 8086
+spring:
+  application:
+      name: hystrix-dashboard-turbine-demo
+
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka/
+
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+
+
+---
+turbine:
+  ##需要监控的服务名
+  app-config: zuul-demo,service1-jaeger-demo,service2-jaeger-demo
+  aggregator:
+    ##需要监控的服务集群名
+    clusterConfig: default
+  clusterNameExpression: new String("default")

@@ -1,0 +1,62 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: zuul-demo
+
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8083/eureka/
+
+---
+zuul:
+  routes:
+    service1-jaeger-demo:
+      path: /service1-jaeger-demo/**
+    service2-jaeger-demo:
+      path: /service2-jaeger-demo/**
+
+---
+#ribbon:
+#  eager-load:
+#    enabled: true
+#    clients: service1-jaeger-demo, service2-jaeger-demo
+
+zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+  ignored-services:
+
+
+---
+ribbon:
+  OkToRetryOnAllOperations: false #对所有操作请求都进行重试,默认false
+  ReadTimeout: 14000   #负载均衡超时时间，默认值5000
+  ConnectTimeout: 2000 #ribbon请求连接的超时时间，默认值2000
+  MaxAutoRetries: 0     #对当前实例的重试次数，默认0
+  MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1
+hystrix:
+  command:
+    default:  #default全局有效，service id指定应用有效
+      execution:
+        timeout:
+          #是否开启超时熔断
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 34000 #断路器超时时间，默认1000ms 要比（14000 + 2000）*（0+1）*（1+1）=32000大才可以生效
+feign:
+  hystrix:
+    enabled: true
+---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
